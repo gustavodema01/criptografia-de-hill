@@ -1,0 +1,8 @@
+C:\Users\Gustavo\Desktop\criptografia_de_hill\criptografia\criptografia\bin\Debug\criptografia.exe.config
+C:\Users\Gustavo\Desktop\criptografia_de_hill\criptografia\criptografia\bin\Debug\criptografia.exe
+C:\Users\Gustavo\Desktop\criptografia_de_hill\criptografia\criptografia\bin\Debug\criptografia.pdb
+C:\Users\Gustavo\Desktop\criptografia_de_hill\criptografia\criptografia\obj\Debug\criptografia.csproj.AssemblyReference.cache
+C:\Users\Gustavo\Desktop\criptografia_de_hill\criptografia\criptografia\obj\Debug\criptografia.csproj.CoreCompileInputs.cache
+C:\Users\Gustavo\Desktop\criptografia_de_hill\criptografia\criptografia\obj\Debug\criptografia.exe
+C:\Users\Gustavo\Desktop\criptografia_de_hill\criptografia\criptografia\obj\Debug\criptografia.pdb
+C:\Users\Gustavo\Desktop\criptografia_de_hill\criptografia\criptografia\obj\Debug\criptografia.exe.config
