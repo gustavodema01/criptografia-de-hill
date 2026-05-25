@@ -11,12 +11,9 @@ namespace criptografia
     {
         static async Task Main(string[] args)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            await Animacao("SEJA BEM VINDO A CRIPTOGRAFIA DE HILL!", 20);
-            Console.ResetColor();
-            Console.WriteLine("\nAperta uma tecla para continuar");
-            Console.ReadKey();
+            await Menu(); //sem o await apareceria o write de baixo junto com a função
             Console.Clear();
+
             Console.Write("\nDigite a palavra: ");
             string palavra = Validacao(); //chama a função para garantir que escreva letras
 
@@ -33,7 +30,9 @@ namespace criptografia
 
             char[,] Matriz = new char[tamanho, tamanho];
 
-             indice = 0;
+            indice = 0;
+            Console.WriteLine("Matriz em letras: ");
+
             for (int i = 0; i < tamanho; i++)
             {
                 for (int j = 0; j < tamanho; j++)
@@ -45,9 +44,32 @@ namespace criptografia
                 }
                 Console.WriteLine("");
             }
+            int[,] MatrizNum = new int[tamanho, tamanho];
+            indice = 0;
+            Console.WriteLine("\nMatriz em números: ");
+
+            for (int i = 0; i < tamanho; i++)
+            {
+                for(int k  = 0; k < tamanho; k++)
+                {
+                    MatrizNum[i, k] = char.ToLower(palavraCompleta[indice]) - 'a' + 1;
+                    indice++;
+                    Console.Write($"\t{MatrizNum[i, k]}");
+                }
+                Console.WriteLine("");
+            }
 
 
 
+        }
+
+        static async Task Menu()//se tem await, a função precisa ser asynk task ao invés de void
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            await Animacao("SEJA BEM VINDO A CRIPTOGRAFIA DE HILL!", 20);
+            Console.ResetColor();
+            Console.WriteLine("\nAperta uma tecla para continuar");
+            Console.ReadKey();
         }
 
         static async Task Animacao(string texto, int velocidade)
