@@ -15,23 +15,24 @@ namespace criptografia
             Console.Clear();
 
             Console.Write("\nDigite a palavra: ");
-            string palavra = Validacao(); //chama a função para garantir que escreva letras
+            string palavra = Validacao(); //chama a função Validacao para garantir que escreva letras
 
             int indice = 0;
             Console.WriteLine("\nTabela ASCII");
-            foreach (char letra in palavra) //pega um índice de palavras e atribui a letra
+            foreach (char letra in palavra) //pega um índice de palavra e atribui a letra
             {
                 indice = char.ToLower(letra) - 'a' + 1; // 'a' vale 97 na tabela ASCII. Então: letra - 97 + 1. ex: 'a'(97) - 'a'(97) = 0 + 1 = 1
-                Console.WriteLine($"{char.ToUpper(letra)} = {indice}");
+                Console.WriteLine($"{char.ToUpper(letra)} = {indice}"); //essa letra é esse número
             }
-            int tamanho = Tamanhomatrizes(palavra.Length); //dimensão da matriz. exp =3x3 = 3, 4x4 = 4...
+            int tamanho = Tamanhomatrizes(palavra.Length); //dimensão da matriz de acordo com a quantidade de letras em palavra. exp =3x3 = 3, 4x4 = 4...
 
-            string palavraCompleta = CompletarMatriz(palavra, tamanho);
+            string palavraCompleta = CompletarMatriz(palavra, tamanho); //palavra com os *, se necessário
 
             char[,] Matriz = new char[tamanho, tamanho];
 
+            Console.Clear();
             indice = 0;
-            Console.WriteLine("Matriz em letras: ");
+            Console.WriteLine("Matriz em letras: "); //colocar isso em função
 
             for (int i = 0; i < tamanho; i++)
             {
@@ -46,20 +47,27 @@ namespace criptografia
             }
             int[,] MatrizNum = new int[tamanho, tamanho];
             indice = 0;
-            Console.WriteLine("\nMatriz em números: ");
+            Console.WriteLine("Matriz em números: ");   //colocar isso em função
 
             for (int i = 0; i < tamanho; i++)
             {
-                for(int k  = 0; k < tamanho; k++)
+                for (int k = 0; k < tamanho; k++)
                 {
                     MatrizNum[i, k] = char.ToLower(palavraCompleta[indice]) - 'a' + 1;
                     indice++;
+                    if (MatrizNum[i, k] == -54) // o valor do * na tabela ASCII é -54, mas no alfabeto de hill é 0. então atualizei o valor para 0 na matriz
+                    {
+                        MatrizNum[i, k] = 0;
+                    }
                     Console.Write($"\t{MatrizNum[i, k]}");
                 }
                 Console.WriteLine("");
             }
+            Console.WriteLine("\nAperte qualquer tecla para seguir em frente");
+            Console.ReadKey();
 
-
+            Console.Clear();
+            int[,] Chave = MatrizChave(tamanho);
 
         }
 
@@ -71,7 +79,6 @@ namespace criptografia
             Console.WriteLine("\nAperta uma tecla para continuar");
             Console.ReadKey();
         }
-
         static async Task Animacao(string texto, int velocidade)
         {
             foreach (char letra in texto)
@@ -81,7 +88,6 @@ namespace criptografia
             }
             Console.WriteLine();
         }
-
         static string Validacao()
         {
             bool validacao = false;
@@ -116,7 +122,26 @@ namespace criptografia
             }
             return frase;
         }
-
+        static int ValidacaoInt()
+        {
+            int output = 0;
+            bool validacao = false;
+            while (!validacao)
+            {
+                string input = Console.ReadLine();
+                if (int.TryParse(input, out output))
+                {
+                    validacao = true;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("Insira apenas números: ");
+                    Console.ResetColor();
+                }
+            }
+            return output;
+        }
         static int Tamanhomatrizes(int qtd) //função para calcular o tamanho da matriz apartir do indice da frase
         {
             int tamanho = 0;
@@ -139,7 +164,6 @@ namespace criptografia
             }
             return tamanho;
         }
-
         static string CompletarMatriz(string palavra, int tamanho)
         {
             int resultado = 0;
@@ -150,11 +174,40 @@ namespace criptografia
 
             while (asteriscos > 0)
             {
-                palavra += '*';
+                palavra += ('*');
                 asteriscos--;
             }
             return palavra;
         } //os espaços em vazio serão preenchidos com *. exp: BOL --> matriz 2x2 ficando BO/L*
+        static int[,] MatrizChave(int tamanho) //função para fazer a matriz chave(C) 
+        {
+            Console.WriteLine("Digite a Matriz Chave: ");
+            int[,] Chave = new int[tamanho, tamanho]; //tamanho = tamanho da matriz
+
+            for (int i = 0; i < tamanho; i++)
+            {
+                for (int j = 0; j < tamanho; j++)
+                {
+                    Console.Write($"[{i}],[{j}]:");
+                    Chave[i, j] = ValidacaoInt(); //função que garante que o usuário só escreva números
+                }
+            }
+            Console.Clear();
+            Console.WriteLine("Sua Matriz Chave:");
+            for (int i = 0; i < tamanho; i++)
+            {
+                for (int j = 0; j < tamanho; j++)
+                {
+                    Console.Write($"\t{Chave[i, j]}");
+                }
+                Console.WriteLine("");
+            }
+
+            Console.WriteLine("\nOBS: NÃO ESQUEÇA A MATRIZ CHAVE.");
+            Console.WriteLine("\n\nAperte qualquer tecla para seguir em frente");
+            Console.ReadKey();
+            return Chave;
+        }
     }
 }
 
