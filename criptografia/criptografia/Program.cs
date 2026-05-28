@@ -29,26 +29,15 @@ namespace criptografia
             string palavraCompleta = CompletarMatriz(palavra, tamanho); //palavra com os *, se necessário
 
             char[,] Matriz = new char[tamanho, tamanho];
-
             Console.Clear();
+
             indice = 0;
-            Console.WriteLine("Matriz em letras: "); //colocar isso em função
+            Console.WriteLine("Matriz em letras: "); 
+            char[,] letras = MatrizLetras(tamanho, Matriz, palavraCompleta, indice);
 
-            for (int i = 0; i < tamanho; i++)
-            {
-                for (int j = 0; j < tamanho; j++)
-                {
-                    Matriz[i, j] = palavraCompleta[indice];
-                    indice++;
-
-                    Console.Write($"\t{Matriz[i, j]}");
-                }
-                Console.WriteLine("");
-            }
             int[,] MatrizNum = new int[tamanho, tamanho];
             indice = 0;
-            Console.WriteLine("Matriz em números: ");   //colocar isso em função
-
+            Console.WriteLine("\nMatriz em números: ");   //colocar isso em função
             for (int i = 0; i < tamanho; i++)
             {
                 for (int k = 0; k < tamanho; k++)
@@ -179,6 +168,21 @@ namespace criptografia
             }
             return palavra;
         } //os espaços em vazio serão preenchidos com *. exp: BOL --> matriz 2x2 ficando BO/L*
+        static char[,] MatrizLetras(int largura, char[,]Matriz , string todapalavra, int indice )
+        {
+            for (int i = 0; i < largura; i++)
+            {
+                for (int j = 0; j < largura; j++)
+                {
+                    Matriz[i, j] = todapalavra[indice];
+                    indice++;
+
+                    Console.Write($"\t{Matriz[i, j]}");
+                }
+                Console.WriteLine("");
+            }
+            return Matriz;
+        }
         static int[,] MatrizChave(int tamanho) //função para fazer a matriz chave(C) 
         {
             Console.WriteLine("Digite a Matriz Chave: ");
