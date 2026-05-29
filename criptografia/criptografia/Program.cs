@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace criptografia
             await Menu(); //sem o await apareceria o write de baixo junto com a função
             Console.Clear();
 
-            Console.Write("\nDigite a palavra: ");
+            Console.Write("\nDigite a palavra(até 9 letras): ");
             string palavra = Validacao(); //chama a função Validacao para garantir que escreva letras
 
             int indice = 0;
@@ -32,7 +33,7 @@ namespace criptografia
             Console.Clear();
 
             indice = 0;
-            Console.WriteLine("Matriz em letras: "); 
+            Console.WriteLine("Matriz em letras: ");
             char[,] letras = MatrizLetras(tamanho, Matriz, palavraCompleta, indice);
 
             int[,] MatrizNum = new int[tamanho, tamanho];
@@ -51,12 +52,15 @@ namespace criptografia
                     Console.Write($"\t{MatrizNum[i, k]}");
                 }
                 Console.WriteLine("");
-            }
-            Console.WriteLine("\nAperte qualquer tecla para seguir em frente");
-            Console.ReadKey();
-
+            }        
             Console.Clear();
             int[,] Chave = MatrizChave(tamanho);
+
+            int MatrizDeterminante = Determinante(Chave, tamanho);
+            Console.WriteLine($"\nDeterminante da matriz chave: {MatrizDeterminante}");
+
+            Console.WriteLine("\nAperte qualquer tecla para seguir em frente");
+            Console.ReadKey();
 
         }
 
@@ -133,25 +137,10 @@ namespace criptografia
         }
         static int Tamanhomatrizes(int qtd) //função para calcular o tamanho da matriz apartir do indice da frase
         {
-            int tamanho = 0;
-
-            if (qtd <= 4)
-            {
-                tamanho = 2;
-            }
-            else if (qtd <= 9)
-            {
-                tamanho = 3;
-            }
-            else if (qtd < 16)
-            {
-                tamanho = 4;
-            }
-            else if (qtd <= 25)
-            {
-                tamanho = 5;
-            }
-            return tamanho;
+            if (qtd <= 4) return 2;
+            if (qtd <= 9) return 3;
+            return 0; // inválido
+        
         }
         static string CompletarMatriz(string palavra, int tamanho)
         {
@@ -168,7 +157,7 @@ namespace criptografia
             }
             return palavra;
         } //os espaços em vazio serão preenchidos com *. exp: BOL --> matriz 2x2 ficando BO/L*
-        static char[,] MatrizLetras(int largura, char[,]Matriz , string todapalavra, int indice )
+        static char[,] MatrizLetras(int largura, char[,] Matriz, string todapalavra, int indice)
         {
             for (int i = 0; i < largura; i++)
             {
@@ -207,10 +196,24 @@ namespace criptografia
                 Console.WriteLine("");
             }
 
-            Console.WriteLine("\nOBS: NÃO ESQUEÇA A MATRIZ CHAVE.");
-            Console.WriteLine("\n\nAperte qualquer tecla para seguir em frente");
-            Console.ReadKey();
+            Console.WriteLine("\nOBS: NÃO ESQUEÇA A MATRIZ CHAVE.");       
             return Chave;
+        }
+        static int Determinante(int[,] matriz, int tamanho)
+        {
+            if (tamanho == 2)
+            {
+                return (matriz[0, 0] * matriz[1, 1]) - (matriz[0, 1] * matriz[1, 0]);              
+            }
+            else // 3x3
+            {
+                return (matriz[0, 0] * matriz[1, 1] * matriz[2, 2] +
+                        matriz[0, 1] * matriz[1, 2] * matriz[2, 0] +
+                        matriz[0, 2] * matriz[1, 0] * matriz[2, 1]) -
+                       (matriz[0, 2] * matriz[1, 1] * matriz[2, 0] +
+                        matriz[0, 0] * matriz[1, 2] * matriz[2, 1] +
+                        matriz[0, 1] * matriz[1, 0] * matriz[2, 2]);
+            }
         }
     }
 }
