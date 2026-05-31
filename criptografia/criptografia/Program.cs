@@ -52,16 +52,12 @@ namespace criptografia
                     Console.Write($"\t{MatrizNum[i, k]}");
                 }
                 Console.WriteLine("");
-            }        
+            }
             Console.Clear();
             int[,] Chave = MatrizChave(tamanho);
 
-            int MatrizDeterminante = Determinante(Chave, tamanho);
-            Console.WriteLine($"\nDeterminante da matriz chave: {MatrizDeterminante}");
-
-            Console.WriteLine("\nAperte qualquer tecla para seguir em frente");
-            Console.ReadKey();
-
+            int[,] MatrizCriptografada = Criptografada(MatrizNum, Chave, tamanho, palavra);
+           
         }
 
         static async Task Menu()//se tem await, a função precisa ser asynk task ao invés de void
@@ -89,26 +85,36 @@ namespace criptografia
             while (!validacao)
             {
                 frase = Console.ReadLine();
-                validacao = true; // assume válida
-                if (string.IsNullOrEmpty(frase)) //se escrever nada ou um espaço
+                validacao = true;
+
+                if (string.IsNullOrEmpty(frase)) //se a frase estiver vazia ou com espaços
                 {
+                    Console.Clear();
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("Digite pelo menos uma letra: ");
+                    Console.Write("Digite pelo menos uma palavra(sem espaços):");
                     Console.ResetColor();
+                    validacao = false; //pra sair do if
+                }
+                else if (frase.Length > 9) //se a frase tiver mais de 9 letras
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("Digite menos de 9 letras: ");
+                    Console.ResetColor();
+                    validacao = false; // sai do else
                 }
                 else
                 {
-                    validacao = true;
-
-                    foreach (char apoio in frase)
+                    foreach(char c in frase)
                     {
-                        if (!char.IsLetter(apoio)) //se apoio for diferente de letra
+                        if (!char.IsLetter(c)) //se a frase tiver algo diferente de letras
                         {
+                            Console.Clear();
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("Digite apenas letras: ");
+                            Console.Write("Digite apenas letras(sem espaços): ");
                             Console.ResetColor();
-                            validacao = false; // achou erro, repete
-                            break;
+                            validacao = false; // sai do else
+
                         }
                     }
                 }
@@ -140,7 +146,7 @@ namespace criptografia
             if (qtd <= 4) return 2;
             if (qtd <= 9) return 3;
             return 0; // inválido
-        
+
         }
         static string CompletarMatriz(string palavra, int tamanho)
         {
@@ -196,14 +202,49 @@ namespace criptografia
                 Console.WriteLine("");
             }
 
-            Console.WriteLine("\nOBS: NÃO ESQUEÇA A MATRIZ CHAVE.");       
+            Console.WriteLine("\nOBS: NÃO ESQUEÇA A MATRIZ CHAVE.");
+            Console.WriteLine("Aperte qualquer tecla para continuar");
+            Console.ReadKey();
             return Chave;
+        }
+        static int[,] Criptografada(int[,] matrizpalavra, int[,] matrizchave, int tamanho, string verso)
+        {
+            Console.Clear();
+            int[,] resultado = new int[tamanho, tamanho]; 
+
+            for (int i = 0; i < tamanho; i++)
+            {
+                for (int j = 0; j < tamanho; j++)
+                {
+                    resultado[i, j] = 0;
+                    for (int k = 0; k < tamanho; k++)
+                    {
+                        resultado[i, j] += matrizchave[i, k] * matrizpalavra[k, j];
+                    }
+                    resultado[i, j] = resultado[i, j] % 26; 
+                }
+            }
+            Console.Write("Palavra: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write(verso.ToUpper());
+            Console.ResetColor();
+            Console.WriteLine(" Criptografada: ");
+
+            for (int i = 0; i < tamanho; i++)
+            {
+                for (int j = 0; j < tamanho; j++)
+                {
+                    Console.Write($"\t{resultado[i, j]}");
+                }
+                Console.WriteLine("");
+            }
+            return resultado;
         }
         static int Determinante(int[,] matriz, int tamanho)
         {
             if (tamanho == 2)
             {
-                return (matriz[0, 0] * matriz[1, 1]) - (matriz[0, 1] * matriz[1, 0]);              
+                return (matriz[0, 0] * matriz[1, 1]) - (matriz[0, 1] * matriz[1, 0]);
             }
             else // 3x3
             {
