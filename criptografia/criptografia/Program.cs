@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace criptografia
             }
             else if (opcao == 2)
             {
-                Descriptografia();
+                Console.WriteLine("Função Descriptografia em desenvolvimento.");
             }
         }
 
@@ -43,7 +44,7 @@ namespace criptografia
                 if (escolhamenu <= 0 | escolhamenu > 2)
                 {
                     Console.Clear();
-                    Console.ForegroundColor= ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("SEJA BEM VINDO A CRIPTOGRAFIA DE HILL!");
                     Console.ResetColor();
 
@@ -276,8 +277,8 @@ namespace criptografia
 
             int[,] MatrizCriptografada = Criptografada(MatrizNum, Chave, tamanho, palavra);
 
-           int Voltarousair = await Voltar();
-            
+            int Voltarousair = await Voltar();
+
             return MatrizCriptografada;
         }
         static int Determinante(int[,] matriz, int tamanho)
@@ -307,11 +308,11 @@ namespace criptografia
             while (!validacao)
             {
                 opcaomenu = ValidacaoInt();
-                if(opcaomenu == 1)
+                if (opcaomenu == 1)
                 {
-                   await Menu();
+                    await Menu();
                 }
-                else if(opcaomenu == 2)
+                else if (opcaomenu == 2)
                 {
                     Console.Clear();
                     Console.WriteLine("Saindo...");
@@ -327,9 +328,19 @@ namespace criptografia
             }
             return opcaomenu;
         }
-        static void Descriptografia()
+        static int[,] Descriptografia(int tamanho, int indice)
         {
-            Console.WriteLine("Função em andamento.");
+            int[,] matrizchave = new int[tamanho, tamanho];
+            int[,] inversa = new int[tamanho, tamanho];
+
+            if (tamanho == 2)
+            {
+                matrizchave[0, 0] = inversa[1, 1];
+                matrizchave[1, 0] = -inversa[1, 0];
+                matrizchave[1, 1] = inversa[0, 0];
+                matrizchave[0, 1] = -inversa[0, 1];
+            }
+            return matrizchave;
         }
     }
 }
