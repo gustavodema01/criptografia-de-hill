@@ -22,10 +22,9 @@ namespace criptografia
             }
             else if (opcao == 2)
             {
-                Console.WriteLine("Função Descriptografia em desenvolvimento.");
+
             }
         }
-
         static async Task<int> Menu()//se tem await, a função precisa ser asynk task ao invés de void
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -310,6 +309,7 @@ namespace criptografia
                 opcaomenu = ValidacaoInt();
                 if (opcaomenu == 1)
                 {
+                    Console.Clear();
                     await Menu();
                 }
                 else if (opcaomenu == 2)
@@ -328,19 +328,49 @@ namespace criptografia
             }
             return opcaomenu;
         }
-        static int[,] Descriptografia(int tamanho, int indice)
+        static int[,] Submatriz(int[,] matriz, int linhaRemover, int colunaRemover)
         {
-            int[,] matrizchave = new int[tamanho, tamanho];
-            int[,] inversa = new int[tamanho, tamanho];
+            int[,] sub = new int[2, 2];
+            int linhaAtual = 0;
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (i == linhaRemover) continue;
+                int colunaAtual = 0;
+                for (int j = 0; j < 3; j++)
+                {
+                    if (j == colunaRemover) continue;
+                    sub[linhaAtual, colunaAtual] = matriz[i, j];
+                    colunaAtual++;
+                }
+                linhaAtual++;
+            }
+            return sub;
+        }
+        static int[,] CofatorChave(int[,] chave, int tamanho)
+        {
+            int[,] cofator = new int[tamanho, tamanho];
 
             if (tamanho == 2)
             {
-                matrizchave[0, 0] = inversa[1, 1];
-                matrizchave[1, 0] = -inversa[1, 0];
-                matrizchave[1, 1] = inversa[0, 0];
-                matrizchave[0, 1] = -inversa[0, 1];
+                cofator[0, 0] = chave[1, 1];
+                cofator[0, 1] = -chave[0, 1];
+                cofator[1, 0] = -chave[1, 0];
+                cofator[1, 1] = chave[0, 0];
             }
-            return matrizchave;
+            else // 3x3
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        int[,] sub = Submatriz(chave, i, j);
+                        int det = (sub[0, 0] * sub[1, 1]) - (sub[0, 1] * sub[1, 0]);
+                        cofator[i, j] = (int)Math.Pow(-1, i + j) * det;
+                    }
+                }
+            }
+            return cofator;
         }
     }
 }
