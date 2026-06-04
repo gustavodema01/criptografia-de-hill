@@ -13,15 +13,49 @@ namespace criptografia
     {
         static async Task Main(string[] args)
         {
-            int opcao = await Menu(); //sem o await apareceria o write de baixo junto com a função
-            Console.Clear();
+            bool sair = false;
+            while (!sair)
+            {
+                int opcao = await Menu();
+                Console.Clear();
 
-            if (opcao == 1)
-            {
-                await Criptografar();
-            }
-            else if (opcao == 2)
-            {
+                if (opcao == 1)
+                {
+                    await Criptografar();
+
+                }
+                else if ((opcao == 2))
+                {
+                    Descriptografar();
+                }
+                Console.WriteLine("\nDeseja voltar ao Menu?");
+                Console.WriteLine("1. SIM");
+                Console.WriteLine("2. NÃO");
+                Console.Write("Qual deseja?: ");
+
+                bool validacao = false;
+                while (!validacao)
+                {
+                    int escolha = ValidacaoInt();
+                    if (escolha == 1)
+                    {
+                        validacao = true;
+                    }
+                    else if (escolha == 2)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Saindo...");
+                        sair = true;
+                        validacao = true;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Escolha entre 1 e 2");
+                    }
+                }
+
+                Console.Clear();
 
             }
         }
@@ -40,7 +74,7 @@ namespace criptografia
                 escolhamenu = ValidacaoInt();
                 validacao = true;
 
-                if (escolhamenu <= 0 | escolhamenu > 2)
+                if (escolhamenu <= 0 || escolhamenu > 2)
                 {
                     Console.Clear();
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -122,6 +156,7 @@ namespace criptografia
                 if (int.TryParse(input, out output))
                 {
                     validacao = true;
+                    break;
                 }
                 else
                 {
@@ -169,17 +204,34 @@ namespace criptografia
             }
             return Matriz;
         }
-        static int[,] MatrizChave(int tamanho) //função para fazer a matriz chave(C) 
+        static int[,] MatrizChave(int tamanho)
         {
-            Console.WriteLine("Digite a Matriz Chave: ");
-            int[,] Chave = new int[tamanho, tamanho]; //tamanho = tamanho da matriz
+            int[,] Chave = new int[tamanho, tamanho];
+            bool chaveValida = false;
 
-            for (int i = 0; i < tamanho; i++)
+            while (!chaveValida)
             {
-                for (int j = 0; j < tamanho; j++)
+                Console.WriteLine("Digite a Matriz Chave: ");
+                for (int i = 0; i < tamanho; i++)
+                    for (int j = 0; j < tamanho; j++)
+                    {
+                        Console.Write($"[{i}],[{j}]:");
+                        Chave[i, j] = ValidacaoInt();
+                    }
+
+                int det = Determinante(Chave, tamanho);
+                int invMod = InversoModular(det);
+
+                if (invMod == -1)
                 {
-                    Console.Write($"[{i}],[{j}]:");
-                    Chave[i, j] = ValidacaoInt(); //função que garante que o usuário só escreva números
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Chave inválida! Determinante não tem inverso mod 26. Tente outra.");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    chaveValida = true;
                 }
             }
             Console.Clear();
@@ -187,12 +239,9 @@ namespace criptografia
             for (int i = 0; i < tamanho; i++)
             {
                 for (int j = 0; j < tamanho; j++)
-                {
                     Console.Write($"\t{Chave[i, j]}");
-                }
                 Console.WriteLine("");
             }
-
             Console.WriteLine("\nOBS: NÃO ESQUEÇA A MATRIZ CHAVE.");
             Console.WriteLine("Aperte qualquer tecla para continuar");
             Console.ReadKey();
@@ -276,8 +325,6 @@ namespace criptografia
 
             int[,] MatrizCriptografada = Criptografada(MatrizNum, Chave, tamanho, palavra);
 
-            int Voltarousair = await Voltar();
-
             return MatrizCriptografada;
         }
         static int Determinante(int[,] matriz, int tamanho)
@@ -295,38 +342,6 @@ namespace criptografia
                         matriz[0, 0] * matriz[1, 2] * matriz[2, 1] +
                         matriz[0, 1] * matriz[1, 0] * matriz[2, 2]);
             }
-        }
-        static async Task<int> Voltar()
-        {
-            int opcaomenu = 0;
-            bool validacao = false;
-            Console.WriteLine("\n1. SIM");
-            Console.WriteLine("2. NÃO");
-            Console.Write("Deseja voltar o Menu?: ");
-
-            while (!validacao)
-            {
-                opcaomenu = ValidacaoInt();
-                if (opcaomenu == 1)
-                {
-                    Console.Clear();
-                    await Menu();
-                }
-                else if (opcaomenu == 2)
-                {
-                    Console.Clear();
-                    Console.WriteLine("Saindo...");
-                    validacao = true;
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("Digite uma opção válida: ");
-                    Console.ResetColor();
-                    validacao = false; //volta pra pergunta
-                }
-            }
-            return opcaomenu;
         }
         static int[,] Submatriz(int[,] matriz, int linhaRemover, int colunaRemover)
         {
@@ -372,6 +387,96 @@ namespace criptografia
             }
             return cofator;
         }
+        static int InversoModular(int det)
+        {
+            det = ((det % 26) + 26) % 26;
+            for (int x = 1; x < 26; x++)
+                if ((det * x) % 26 == 1)
+                    return x;
+            return -1;
+        }
+        static void Descriptografar()
+        {
+            int tamanho = 0;
+            bool validacao = false;
+            Console.Write("Digite o tamanho da matriz (2 ou 3): ");
+            while (!validacao)
+            {
+                tamanho = ValidacaoInt();
+                if (tamanho == 2 || tamanho == 3)
+                {
+                    validacao = true; // sai do while
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("Digite apenas 2 ou 3: ");
+                    Console.ResetColor();
+                }
+            }
+            Console.Clear();
+            int[,] matrizCript = new int[tamanho, tamanho]; // 1. Pede a matriz criptografada
+            Console.WriteLine("Digite a matriz criptografada:");
+            for (int i = 0; i < tamanho; i++)
+                for (int j = 0; j < tamanho; j++)
+                {
+                    Console.Write($"[{i},{j}]: ");
+                    matrizCript[i, j] = ValidacaoInt();
+                }
+
+            //Pede a matriz chave
+            int[,] chave = MatrizChave(tamanho);
+
+            //Calcula determinante
+            int det = Determinante(chave, tamanho);
+
+            //Calcula inverso modular
+            int invMod = InversoModular(det);
+            if (invMod == -1)
+            {
+                Console.Clear();
+                Console.WriteLine("Chave inválida! Escolha outra matriz chave..");
+            }
+
+            //Calcula cofator
+            int[,] cofator = CofatorChave(chave, tamanho);
+
+            //Monta matriz inversa
+            int[,] inversa = new int[tamanho, tamanho];
+            for (int i = 0; i < tamanho; i++)
+                for (int j = 0; j < tamanho; j++)
+                {
+                    inversa[j, i] = ((invMod * cofator[i, j]) % 26 + 26) % 26;
+                }
+
+            //Multiplica inversa × matrizCript
+            int[,] resultado = new int[tamanho, tamanho];
+            for (int i = 0; i < tamanho; i++)
+                for (int j = 0; j < tamanho; j++)
+                {
+                    resultado[i, j] = 0;
+                    for (int k = 0; k < tamanho; k++)
+                        resultado[i, j] += inversa[i, k] * matrizCript[k, j];
+                    resultado[i, j] = ((resultado[i, j] % 26) + 26) % 26;
+                }
+
+            //Converte números para letras
+            Console.WriteLine("\nPalavra descriptografada: ");
+            for (int i = 0; i < tamanho; i++)
+                for (int j = 0; j < tamanho; j++)
+                {
+                    if (resultado[i, j] == 0) break; // era *
+                    char letra = (char)(resultado[i, j] + 'a' - 1);
+                    Console.Write(char.ToUpper(letra));
+                }
+            Console.WriteLine();
+        }
     }
 }
+
+
+
+
+
 
