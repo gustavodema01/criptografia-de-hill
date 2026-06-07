@@ -21,20 +21,20 @@ namespace criptografia
 
                 if (opcao == 1)
                 {
-                     Criptografar();
+                    Criptografar();
 
                 }
                 else if (opcao == 2)
                 {
                     Descriptografar();
-                }             
-                else if(opcao == 3)
-                {
-                     ComoFunciona();
                 }
-                else if(opcao == 4)
+                else if (opcao == 3)
                 {
-                     ChaveComoFunciona();
+                    ComoFunciona();
+                }
+                else if (opcao == 4)
+                {
+                    ChaveComoFunciona();
                 }
                 Console.WriteLine("\nDeseja voltar ao Menu?");
                 Console.WriteLine("1. SIM");
@@ -44,7 +44,7 @@ namespace criptografia
                 bool validacao = false;
                 while (!validacao)
                 {
-                    int escolha = ValidacaoInt();
+                    int escolha = Validacao.ValidacaoInt();
                     if (escolha == 1)
                     {
                         validacao = true;
@@ -85,7 +85,7 @@ namespace criptografia
             int escolhamenu = 0;
             while (!validacao)
             {
-                escolhamenu = ValidacaoInt();
+                escolhamenu = Validacao.ValidacaoInt();
                 validacao = true;
 
                 if (escolhamenu <= 0 || escolhamenu > 4)
@@ -97,19 +97,19 @@ namespace criptografia
                     Console.WriteLine("\n1. Criptografar uma frase ");
                     Console.WriteLine("2. Descriptografar uma frase");
                     Console.WriteLine("------------------------------------------");
-                    Console.ForegroundColor= ConsoleColor.Yellow;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine("ORIENTAÇÕES/AJUDA");
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine("3. Como funciona a Criptografia de HILL?");
                     Console.WriteLine("4. Como escolher uma chave válida");
                     Console.WriteLine("------------------------------------------");
-                    Console.ForegroundColor= ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write("\nEscolha uma opção disponível: ");
                     Console.ResetColor();
                     validacao = false;
                 }
             }
- 
+
             return escolhamenu;
         }
         static async Task Animacao(string texto, int velocidade)
@@ -143,7 +143,7 @@ namespace criptografia
         }
         static void ChaveComoFunciona()
         {
-            Console.ForegroundColor= ConsoleColor.Yellow;
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("COMO ESCOLHER UMA CHAVE");
             Console.ResetColor();
             Console.WriteLine("\nA chave é uma matriz NxN onde:");
@@ -160,71 +160,6 @@ namespace criptografia
             Console.WriteLine("      2  4");
             Console.WriteLine("      1  3");
             Console.WriteLine("det = (2x3)-(4x1) = 2   ✗");
-        }
-        static string Validacao()
-        {
-            bool validacao = false;
-            string frase = "";
-
-            while (!validacao)
-            {
-                frase = Console.ReadLine();
-                validacao = true;
-
-                if (string.IsNullOrEmpty(frase)) //se a frase estiver vazia ou com espaços
-                {
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("Digite pelo menos uma palavra(sem espaços):");
-                    Console.ResetColor();
-                    validacao = false; //pra sair do if
-                }
-                else if (frase.Length > 9) //se a frase tiver mais de 9 letras
-                {
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("Digite menos de 9 letras: ");
-                    Console.ResetColor();
-                    validacao = false; // sai do else
-                }
-                else
-                {
-                    foreach (char c in frase)
-                    {
-                        if (!char.IsLetter(c)) //se a frase tiver algo diferente de letras
-                        {
-                            Console.Clear();
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("Digite apenas letras(sem espaços): ");
-                            Console.ResetColor();
-                            validacao = false; // sai do else
-                            break;
-                        }
-                    }
-                }
-            }
-            return frase;
-        }
-        static int ValidacaoInt()
-        {
-            int output = 0;
-            bool validacao = false;
-            while (!validacao)
-            {
-                string input = Console.ReadLine();
-                if (int.TryParse(input, out output))
-                {
-                    validacao = true;
-                    break;
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("Insira apenas números: ");
-                    Console.ResetColor();
-                }
-            }
-            return output;
         }
         static int Tamanhomatrizes(int qtd) //função para calcular o tamanho da matriz apartir do indice da frase
         {
@@ -275,7 +210,7 @@ namespace criptografia
                     for (int j = 0; j < tamanho; j++)
                     {
                         Console.Write($"[{i}],[{j}]:");
-                        Chave[i, j] = ValidacaoInt();
+                        Chave[i, j] = Validacao.ValidacaoInt();
                     }
 
                 int det = Determinante(Chave, tamanho);
@@ -312,37 +247,46 @@ namespace criptografia
             int[,] resultado = new int[tamanho, tamanho];
 
             for (int i = 0; i < tamanho; i++)
-            {
                 for (int j = 0; j < tamanho; j++)
                 {
                     resultado[i, j] = 0;
-                    for (int k = 0; k < tamanho; k++) // linha 0 da coluna 0 da multiplicação de matrizes é o indice 0(k)
-                    {
+                    for (int k = 0; k < tamanho; k++)
                         resultado[i, j] += matrizchave[i, k] * matrizpalavra[k, j];
-                    }
                     resultado[i, j] = resultado[i, j] % 26;
                 }
-            }
+
             Console.Write("Palavra: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write(verso.ToUpper());
             Console.ResetColor();
-            Console.WriteLine(" Criptografada: ");
+            Console.WriteLine(" Criptografada em números:");
 
             for (int i = 0; i < tamanho; i++)
             {
                 for (int j = 0; j < tamanho; j++)
-                {
                     Console.Write($"\t{resultado[i, j]}");
-                }
                 Console.WriteLine("");
             }
+
+            Console.Write("\nPalavra criptografada em letras: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            for (int i = 0; i < tamanho; i++)
+                for (int j = 0; j < tamanho; j++)
+                {
+                    if (resultado[i, j] == 0)
+                        Console.Write("*");
+                    else
+                        Console.Write((char)(resultado[i, j] + 'a' - 1));
+                }
+            Console.ResetColor();
+            Console.WriteLine();
+
             return resultado;
         }
         static int[,] Criptografar()
         {
             Console.Write("Digite a palavra(até 9 letras): ");
-            string palavra = Validacao(); //chama a função Validacao para garantir que escreva letras
+            string palavra = Validacao.ValidacaoLetras(); //chama a função Validacao para garantir que escreva letras
 
             int indice = 0;
             Console.WriteLine("\nTabela ASCII");
@@ -461,7 +405,7 @@ namespace criptografia
             Console.Write("Digite o tamanho da matriz (2 ou 3): ");
             while (!validacao)
             {
-                tamanho = ValidacaoInt();
+                tamanho = Validacao.ValidacaoInt();
                 if (tamanho == 2 || tamanho == 3)
                 {
                     validacao = true; // sai do while
@@ -481,7 +425,7 @@ namespace criptografia
                 for (int j = 0; j < tamanho; j++)
                 {
                     Console.Write($"[{i},{j}]: ");
-                    matrizCript[i, j] = ValidacaoInt();
+                    matrizCript[i, j] = Validacao.ValidacaoInt();
                 }
 
             //Pede a matriz chave
@@ -491,7 +435,7 @@ namespace criptografia
             int det = Determinante(chave, tamanho);
 
             //Calcula inverso modular
-            int invMod = InversoModular(det);          
+            int invMod = InversoModular(det);
 
             //Calcula cofator
             int[,] cofator = CofatorChave(chave, tamanho);
