@@ -53,5 +53,4 @@ main: Versão sem POO(procedural) — funções no Program.cs
 refactor/poo: Versão refatorada com classes
 
 ## 📚 Status
-✅ `main` — versão procedural concluída  
-✅ `refactor/poo` — versão orientada a objetos concluída
+em desenvolvimento
