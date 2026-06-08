@@ -7,11 +7,11 @@ O sistema de hill foi amplamente utilizado desde sua origem até meados da **Seg
 Mundial (1939-1945)**, 
 
 ## 🧮 Como funciona?
-A Cifra de Hill é um sistema de **criptografia de chave simétrica (privada)**, ou seja, 
+A Cifra de Hill é um sistema de **criptografia de chave privada**, ou seja, 
 a chave de codificação deve ser mantida em sigilo entre o remetente e o destinatário.
 
 O método utiliza conceitos de:
-- **Álgebra Linear** — operações com matrizes, eliminação gaussiana, independência 
+- **Álgebra Linear** — operações com matrizes, independência 
 linear, base e transformações matriciais
 - **Aritmética Modular** — congruência e inverso modular
 
@@ -32,13 +32,26 @@ conceitos de Álgebra Linear e Aritmética Modular aplicados à criptografia.
 ### Funcionalidades
 - Validação de entrada (aceita apenas letras)
 - Conversão de letras em índices numéricos
-- Organização automática em matriz quadrada (2x2, 3x3, 4x4...)
+- Organização automática em matriz quadrada (2x2 ou 3x3)
 - Preenchimento com `*` nas células vazias
 - Criptografia via multiplicação matricial
 - Descriptografia via matriz inversa da chave
+- Validação automática da matriz chave
+- Menu com orientações sobre como funciona e como escolher uma chave válida
+- Exibe palavra criptografada em números e letras
 
-## 🛠️ Tecnologias
-- C#
+ ### 📁 Estrutura em classes do Projeto (versão POO)
+Validacao: Validação de strings e inteiros
+Matrizes: Operações com matrizes
+Operações: Criptografia e descriptografia
+TelaMenu: Menu e telas de orientação
+Program: Ponto de entrada e fluxo principal
+
+### 🌿 Branches
+main: Versão sem POO(procedural) — funções no Program.cs
+
+refactor/poo: Versão refatorada com classes
 
 ## 📚 Status
-🚧 Em desenvolvimento
+✅ `main` — versão procedural concluída  
+✅ `refactor/poo` — versão orientada a objetos concluída
