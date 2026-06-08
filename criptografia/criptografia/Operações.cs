@@ -53,19 +53,18 @@ namespace criptografia
         public static int[,] Criptografar()
         {
             Console.Write("Digite a palavra(até 9 letras): ");
-            string palavra = Validacao.ValidacaoLetras(); //chama a função Validacao para garantir que escreva letras
+            string palavra = Validacao.ValidacaoLetras();
 
             int indice = 0;
             Console.WriteLine("\nTabela ASCII");
-            foreach (char letra in palavra) //pega um índice de palavra e atribui a letra
+            foreach (char letra in palavra)
             {
-                indice = char.ToLower(letra) - 'a' + 1; // 'a' vale 97 na tabela ASCII. Então: letra - 97 + 1. ex: 'a'(97) - 'a'(97) = 0 + 1 = 1
-                Console.WriteLine($"{char.ToUpper(letra)} = {indice}"); //essa letra é esse número
+                indice = char.ToLower(letra) - 'a' + 1;
+                Console.WriteLine($"{char.ToUpper(letra)} = {indice}");
             }
-            int tamanho = Matrizes.Tamanhomatrizes(palavra.Length); //dimensão da matriz de acordo com a quantidade de letras em palavra. exp =3x3 = 3, 4x4 = 4...
 
-            string palavraCompleta = Matrizes.CompletarMatriz(palavra, tamanho); //palavra com os *, se necessário
-
+            int tamanho = Matrizes.Tamanhomatrizes(palavra.Length);
+            string palavraCompleta = Matrizes.CompletarMatriz(palavra, tamanho);
             char[,] Matriz = new char[tamanho, tamanho];
             Console.Clear();
 
@@ -74,25 +73,28 @@ namespace criptografia
             char[,] letras = Matrizes.MatrizLetras(tamanho, Matriz, palavraCompleta, indice);
 
             int[,] MatrizNum = new int[tamanho, tamanho];
+
+            // preenche por coluna
             indice = 0;
-            Console.WriteLine("\nMatriz em números: ");   //colocar isso em função
+            for (int j = 0; j < tamanho; j++)
+                for (int i = 0; i < tamanho; i++)
+                {
+                    MatrizNum[i, j] = char.ToLower(palavraCompleta[indice]) - 'a' + 1;
+                    indice++;
+                    if (MatrizNum[i, j] == -54) MatrizNum[i, j] = 0;
+                }
+
+            // exibe por linha
+            Console.WriteLine("\nMatriz em números:");
             for (int i = 0; i < tamanho; i++)
             {
-                for (int k = 0; k < tamanho; k++)
-                {
-                    MatrizNum[i, k] = char.ToLower(palavraCompleta[indice]) - 'a' + 1;
-                    indice++;
-                    if (MatrizNum[i, k] == -54) // o valor do * na tabela ASCII é -54, mas no alfabeto de hill é 0. então atualizei o valor para 0 na matriz
-                    {
-                        MatrizNum[i, k] = 0;
-                    }
-                    Console.Write($"\t{MatrizNum[i, k]}");
-                }
+                for (int j = 0; j < tamanho; j++)
+                    Console.Write($"\t{MatrizNum[i, j]}");
                 Console.WriteLine("");
             }
+
             Console.Clear();
             int[,] Chave = Matrizes.MatrizChave(tamanho);
-
             int[,] MatrizCriptografada = Operações.Criptografada(MatrizNum, Chave, tamanho, palavra);
 
             return MatrizCriptografada;
@@ -193,7 +195,7 @@ namespace criptografia
             for (int i = 0; i < tamanho; i++)
                 for (int j = 0; j < tamanho; j++)
                 {
-                    inversa[j, i] = ((invMod * cofator[i, j]) % 26 + 26) % 26;
+                    inversa[i, j] = ((invMod * cofator[i, j]) % 26 + 26) % 26;
                 }
 
             //Multiplica inversa × matrizCript
@@ -209,10 +211,10 @@ namespace criptografia
 
             //Converte números para letras
             Console.Write("\nPalavra descriptografada: ");
-            for (int i = 0; i < tamanho; i++)
-                for (int j = 0; j < tamanho; j++)
+            for (int j = 0; j < tamanho; j++)
+                for (int i = 0; i < tamanho; i++)
                 {
-                    if (resultado[i, j] == 0) break; // era *
+                    if (resultado[i, j] == 0) continue; // era *
                     char letra = (char)(resultado[i, j] + 'a' - 1);
                     Console.Write(char.ToUpper(letra));
                 }
